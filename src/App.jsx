@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import Header from './components/Header.jsx'
 import AddStudentForm from './components/AddStudentForm.jsx'
 import StudentList from './components/StudentList.jsx'
@@ -17,6 +17,21 @@ function App() {
     return startingStudents
     })
 
+    const [search, setSearch] = useState('')
+  
+    if (search) {
+    useState(0)
+    }
+
+  useEffect(() => {
+  localStorage.setItem('students', JSON.stringify(students))
+   }, [students])  
+
+
+  const visibleStudents = students.filter((s) =>
+    s.name.toLowerCase().includes(search.toLowerCase())
+  )
+
   function handleAdd(name, grade) {
     setStudents([...students, { id: Date.now(), name, grade }])
   }
@@ -24,24 +39,26 @@ function App() {
   function handleDelete(id) {
     setStudents(students.filter((s) => s.id !== id))
   }
-  
-  useEffect(() => {
-    localStorage.setItem('students', JSON.stringify(students))
- }, [students])
 
  const count = students.length
-  let average = 0
-  if (count > 0) {
+ const average = useMemo(() => {
+    if (students.length === 0) return 0
     const total = students.reduce((sum, s) => sum + s.grade, 0)
-   average = Math.round((total / count) * 10) / 10
- }
+   return Math.round((total / students.length) * 10) / 10
+  }, [students])
 
   return (
     <div className="min-h-screen bg-stone-100 text-stone-800">
       <main className="mx-auto max-w-xl px-6 py-10">
         <Header count={count} average={average} />
          <AddStudentForm onAdd={handleAdd} />
-        <StudentList students={students} onDelete={handleDelete} />
+        <input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search by name"
+          className="mb-3 w-full rounded-lg border border-stone-300 bg-white px-3 py-2"
+        />
+        <StudentList students={visibleStudents} onDelete={handleDelete} />
       </main>
     </div>
   )
