@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Header from './components/Header.jsx'
 import AddStudentForm from './components/AddStudentForm.jsx'
 import StudentList from './components/StudentList.jsx'
@@ -19,6 +19,15 @@ function App() {
   function handleDelete(id) {
     setStudents(students.filter((s) => s.id !== id))
   }
+  
+  useEffect(() => {
+    localStorage.setItem('students', JSON.stringify(students))
+ }, [students])
+
+ useEffect(() => {
+    const saved = localStorage.getItem('students')
+    if (saved) setStudents(JSON.parse(saved))
+  }, []) 
 
  const count = students.length
   let average = 0
