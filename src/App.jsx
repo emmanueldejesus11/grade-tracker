@@ -10,8 +10,13 @@ const startingStudents = [
 ]
 
 function App() {
-  const [students, setStudents] = useState(startingStudents)
- 
+
+   const [students, setStudents] = useState(() => {
+    const saved = localStorage.getItem('students')
+    if (saved) return JSON.parse(saved)
+    return startingStudents
+    })
+
   function handleAdd(name, grade) {
     setStudents([...students, { id: Date.now(), name, grade }])
   }
@@ -23,11 +28,6 @@ function App() {
   useEffect(() => {
     localStorage.setItem('students', JSON.stringify(students))
  }, [students])
-
- useEffect(() => {
-    const saved = localStorage.getItem('students')
-    if (saved) setStudents(JSON.parse(saved))
-  }, []) 
 
  const count = students.length
   let average = 0
