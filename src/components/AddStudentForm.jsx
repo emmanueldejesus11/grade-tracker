@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 function AddStudentForm({ onAdd }) {
   const [form, setForm] = useState({ name: '', grade: '' })
+  const nameRef = useRef(null)
 
   useEffect(() => {
      const id = setTimeout(() => {
@@ -13,6 +14,7 @@ function AddStudentForm({ onAdd }) {
 
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value })
+    nameRef.current.focus()
   }
 
   function handleSubmit(e) {
@@ -25,6 +27,7 @@ function AddStudentForm({ onAdd }) {
   return (
     <form onSubmit={handleSubmit} className="mb-6 flex gap-2">
       <input
+        ref={nameRef}
         name="name"
         value={form.name}
         onChange={handleChange}
